@@ -1,0 +1,30 @@
+{
+  "run_interval_hours": 12,
+  "run_interval_seconds": 43200,
+  "refresh_token_file": "pixiv_refresh_token.local",
+  "database": "state/pixiv_auto.sqlite3",
+  "download_dir": "downloads",
+  "restrict": ["public", "private"],
+  "max_pages_per_restrict": 1,
+  "request_delay_seconds": 1.0,
+  "download_delay_seconds": 1.0,
+  "retry_failed": true,
+  "max_download_attempts": 0,
+  "stop_after_consecutive_done": 5,
+  "stop_marker": {
+    "enabled": true,
+    "url": "https://www.pixiv.net/artworks/119175141"
+  },
+  "media": {
+    "download_images": true,
+    "download_ugoira": true,
+    "ugoira_format": "gif",
+    "ugoira_fps_fallback": 12
+  },
+  "web": {
+    "enabled": true,
+    "host": "127.0.0.1",
+    "port": 18081,
+    "log_lines": 400
+  }
+}

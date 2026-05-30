@@ -1,0 +1,9 @@
+.git
+__pycache__/
+*.pyc
+state/
+downloads/
+pixiv_refresh_token.local
+config.local.json
+*.sqlite3
+*.sqlite3-*
