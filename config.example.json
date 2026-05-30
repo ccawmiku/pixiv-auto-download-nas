@@ -4,7 +4,12 @@
   "refresh_token_file": "/config/pixiv_refresh_token.txt",
   "database": "/state/pixiv_auto.sqlite3",
   "download_dir": "/downloads",
-  "restrict": ["public", "private"],
+  "image_dir": "/downloads/images",
+  "metadata_dir": "/downloads/downloads-metadata",
+  "restrict": [
+    "public",
+    "private"
+  ],
   "max_pages_per_restrict": 0,
   "request_delay_seconds": 1.0,
   "download_delay_seconds": 1.0,
