@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
   pixiv-auto-downloader:
-    image: ghcr.io/ccawmiku/pixiv-auto-download-nas:1.0.0
+    image: ghcr.io/ccawmiku/pixiv-auto-download-nas:1.2.0
     container_name: pixiv-auto-downloader
     ports:
       - "13004:8080"

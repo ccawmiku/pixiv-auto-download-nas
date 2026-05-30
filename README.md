@@ -121,7 +121,7 @@ http://NAS_IP:13004
 镜像固定版本，不使用 `latest`：
 
 ```text
-ghcr.io/ccawmiku/pixiv-auto-download-nas:1.0.0
+ghcr.io/ccawmiku/pixiv-auto-download-nas:1.2.0
 ```
 
 以后升级时：
