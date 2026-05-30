@@ -41,6 +41,8 @@ DEFAULT_CONFIG: dict[str, Any] = {
     "refresh_token_file": "/config/pixiv_refresh_token.txt",
     "database": "/state/pixiv_auto.sqlite3",
     "download_dir": "/downloads",
+    "image_dir": "/downloads/images",
+    "metadata_dir": "/downloads/downloads-metadata",
     "restrict": ["public", "private"],
     "max_pages_per_restrict": 0,
     "request_delay_seconds": 1.0,
@@ -592,8 +594,19 @@ class PixivDownloader:
             }
         )
 
+    def artifact_root(self, key: str, default_child: str) -> Path:
+        configured = str(self.config.get(key) or "").strip()
+        if configured:
+            return Path(configured)
+        return Path(self.config.get("download_dir", "/downloads")) / default_child
+
     def artwork_dir(self, item: Artwork) -> Path:
-        path = Path(self.config["download_dir"]) / item.artwork_id
+        path = self.artifact_root("image_dir", "images") / item.artwork_id
+        path.mkdir(parents=True, exist_ok=True)
+        return path
+
+    def metadata_dir(self, item: Artwork) -> Path:
+        path = self.artifact_root("metadata_dir", "downloads-metadata") / item.artwork_id
         path.mkdir(parents=True, exist_ok=True)
         return path
 
@@ -705,7 +718,7 @@ class PixivDownloader:
             raise RuntimeError((completed.stderr or completed.stdout)[-2000:])
 
     def write_metadata(self, item: Artwork, extra: dict[str, Any] | None = None) -> None:
-        out_dir = self.artwork_dir(item)
+        out_dir = self.metadata_dir(item)
         data = dict(item.raw)
         if extra:
             data.update(extra)
