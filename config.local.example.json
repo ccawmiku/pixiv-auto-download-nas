@@ -31,5 +31,37 @@
     "host": "127.0.0.1",
     "port": 18081,
     "log_lines": 400
+  },
+  "network": {
+    "api_timeout_seconds": 60,
+    "api_retries": 4,
+    "api_retry_backoff_seconds": 3.0,
+    "download_retries": 4,
+    "download_retry_backoff_seconds": 2.0,
+    "retry_statuses": [
+      429,
+      500,
+      502,
+      503,
+      504
+    ],
+    "retry_after_failure_minutes": 15,
+    "diagnostics": [
+      {
+        "name": "Pixiv OAuth",
+        "url": "https://oauth.secure.pixiv.net/auth/token",
+        "method": "HEAD"
+      },
+      {
+        "name": "Pixiv API",
+        "url": "https://app-api.pixiv.net/",
+        "method": "HEAD"
+      },
+      {
+        "name": "Pixiv Image CDN",
+        "url": "https://i.pximg.net/",
+        "method": "HEAD"
+      }
+    ]
   }
 }

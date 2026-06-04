@@ -12,6 +12,8 @@
 - 支持停止标记和连续已下载停止。
 - 网页端保存 refresh-token、测试 token、立即运行、手动下载单个作品。
 - 日志和进度自动刷新。
+- Pixiv OAuth/API/图片下载带网络重试；临时网络错误会短间隔补跑。
+- 网页端支持网络诊断，方便排查 NAS 到 OAuth、API、图片 CDN 的连通性。
 
 ## 下载目录结构
 
@@ -85,6 +87,34 @@ https://www.pixiv.net/artworks/119175141
 
 也就是连续遇到 5 个数据库里已成功下载且本地文件存在的作品，就停止继续翻页。
 
+## 网络稳定性
+
+旧版 `config.json` 可以直接继续使用；升级后程序会自动套用默认网络配置，不需要手动补字段。
+
+如需调整重试策略，可以在配置里加入：
+
+```json
+"network": {
+  "api_timeout_seconds": 60,
+  "api_retries": 4,
+  "api_retry_backoff_seconds": 3.0,
+  "download_retries": 4,
+  "download_retry_backoff_seconds": 2.0,
+  "retry_statuses": [429, 500, 502, 503, 504],
+  "retry_after_failure_minutes": 15
+}
+```
+
+遇到 `SSLEOFError`、超时、连接重置、429/5xx 等临时网络问题时，认证、采集和下载会自动重试。整轮任务如果因为临时网络问题失败，会在 `retry_after_failure_minutes` 后提前补跑一次，不会等完整同步周期。
+
+网页端点“网络诊断”会测试：
+
+```text
+https://oauth.secure.pixiv.net/auth/token
+https://app-api.pixiv.net/
+https://i.pximg.net/
+```
+
 ## NAS 部署
 
 先创建目录：
@@ -122,6 +152,12 @@ http://NAS_IP:13004
 
 ```text
 ghcr.io/ccawmiku/pixiv-auto-download-nas:1.2.0
+```
+
+`dev` 分支会由 GitHub Actions 构建测试镜像：
+
+```text
+ghcr.io/ccawmiku/pixiv-auto-download-nas:dev
 ```
 
 以后升级时：
