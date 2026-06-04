@@ -983,6 +983,7 @@ class App:
         self.next_run_at = 0.0
         self.last_run_message = ""
         self.last_run_error_type = ""
+        self.waiting_for_token_logged = False
         self.diagnostics: dict[str, Any] = {"running": False, "checked_at": "", "results": []}
         self.diagnostics_lock = threading.Lock()
         self.progress_lock = threading.Lock()
@@ -1229,8 +1230,15 @@ class App:
             if self.next_run_at <= 0:
                 self.next_run_at = time.time() + 5
             if time.time() >= self.next_run_at and not self.running:
-                self.start_run_thread()
-                self.next_run_at = time.time() + interval
+                if self.token_present():
+                    self.waiting_for_token_logged = False
+                    self.start_run_thread()
+                    self.next_run_at = time.time() + interval
+                else:
+                    if not self.waiting_for_token_logged:
+                        self.log.write("未找到 refresh-token，自动运行暂缓；请先在网页端保存 Token")
+                        self.waiting_for_token_logged = True
+                    self.next_run_at = time.time() + 60
             self.stop_event.wait(5)
 
     def status(self) -> dict[str, Any]:
